@@ -19,6 +19,7 @@ class Proyecto extends Model
         'link_repositorio',
         'link_demo',
         'link_presentacion',
+        'tecnologias',
         'calificacion_final',
         'posicion_final',
     ];
@@ -40,6 +41,11 @@ class Proyecto extends Model
     public function calificaciones(): HasMany
     {
         return $this->hasMany(Calificacion::class);
+    }
+
+    public function tareas(): HasMany
+    {
+        return $this->hasMany(TareaProyecto::class);
     }
 
     public function calcularCalificacionFinal(): float

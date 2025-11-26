@@ -22,14 +22,14 @@
                 <div class="flex justify-between h-16">
                     <!-- Logo y Título -->
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 flex items-center gap-3">
+                        <a href="{{ route('dashboard') }}" class="flex-shrink-0 flex items-center gap-3 hover:opacity-80 transition-opacity">
                             <div class="bg-indigo-600 p-2 rounded-lg">
                                 <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z"/>
                                 </svg>
                             </div>
                             <span class="text-xl font-bold text-gray-900">Eventos Académicos</span>
-                        </div>
+                        </a>
                     </div>
 
                     <!-- Acciones de Usuario -->
@@ -54,12 +54,12 @@
 
                             <!-- Perfil -->
                             <div class="flex items-center gap-2">
-                                <button class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100">
+                                <a href="{{ route('profile.show') }}" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                                     <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span class="text-sm font-medium text-gray-700">{{ auth()->user()->name }}</span>
-                                </button>
+                                    <span class="text-sm font-medium text-gray-700 hover:text-indigo-600">{{ auth()->user()->name }}</span>
+                                </a>
                             </div>
 
                             <!-- Salir -->

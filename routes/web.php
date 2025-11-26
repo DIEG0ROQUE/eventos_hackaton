@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,10 +50,13 @@ Route::prefix('eventos')->name('eventos.')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Rutas de Equipos (Requieren Autenticación)
+| Rutas de Equipos (Requieren Autenticación y Perfil Completo)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->prefix('equipos')->name('equipos.')->group(function () {
+Route::middleware(['auth', 'profile.complete'])->prefix('equipos')->name('equipos.')->group(function () {
+    // Seleccionar evento para crear equipo (desde dashboard)
+    Route::get('/seleccionar-evento', [EquipoController::class, 'seleccionarEvento'])->name('seleccionar-evento');
+    
     // Ver equipos de un evento
     Route::get('/evento/{evento}', [EquipoController::class, 'index'])->name('index');
     
@@ -67,11 +71,14 @@ Route::middleware('auth')->prefix('equipos')->name('equipos.')->group(function (
     Route::post('/{equipo}/solicitar', [EquipoController::class, 'solicitarUnirse'])->name('solicitar');
     
     // Gestión de miembros (solo líder)
-    Route::post('/{equipo}/aceptar/{userId}', [EquipoController::class, 'aceptarMiembro'])->name('aceptar-miembro');
-    Route::post('/{equipo}/rechazar/{userId}', [EquipoController::class, 'rechazarMiembro'])->name('rechazar-miembro');
+    Route::post('/{equipo}/aceptar/{participanteId}', [EquipoController::class, 'aceptarMiembro'])->name('aceptar-miembro');
+    Route::post('/{equipo}/rechazar/{participanteId}', [EquipoController::class, 'rechazarMiembro'])->name('rechazar-miembro');
     
     // Abandonar equipo
     Route::delete('/{equipo}/abandonar', [EquipoController::class, 'abandonar'])->name('abandonar');
+    
+    // Chat del equipo
+    Route::post('/{equipo}/mensaje', [EquipoController::class, 'enviarMensaje'])->name('enviar-mensaje');
     
     // Actualizar/eliminar equipo (solo líder)
     Route::put('/{equipo}', [EquipoController::class, 'update'])->name('update');
@@ -80,31 +87,54 @@ Route::middleware('auth')->prefix('equipos')->name('equipos.')->group(function (
 
 /*
 |--------------------------------------------------------------------------
+| Rutas de Proyectos (Requieren Autenticación y Perfil Completo)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'profile.complete'])->prefix('proyectos')->name('proyectos.')->group(function () {
+    // Crear proyecto para un equipo
+    Route::get('/equipo/{equipo}/crear', [ProyectoController::class, 'create'])->name('create');
+    Route::post('/equipo/{equipo}', [ProyectoController::class, 'store'])->name('store');
+    
+    // Editar/actualizar proyecto
+    Route::get('/equipo/{equipo}/editar', [ProyectoController::class, 'edit'])->name('edit');
+    Route::put('/equipo/{equipo}', [ProyectoController::class, 'update'])->name('update');
+    
+    // Eliminar proyecto (solo líder)
+    Route::delete('/equipo/{equipo}', [ProyectoController::class, 'destroy'])->name('destroy');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Dashboard y Perfil (Requieren Autenticación)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    // Dashboard principal - Redirige según rol
-    Route::get('/dashboard', function () {
-        $user = auth()->user();
-        
-        // Si es admin, mostrar dashboard de administrador
-        if ($user->isAdmin()) {
-            return view('admin.dashboard');
-        }
-        
-        // Si es participante, mostrar dashboard de usuario
-        return view('dashboard');
-    })->name('dashboard');
-
-    // Perfil de usuario
-    Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/perfil', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/perfil', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
     // Completar perfil
     Route::get('/perfil/completar', [ProfileController::class, 'complete'])->name('profile.complete');
     Route::post('/perfil/completar', [ProfileController::class, 'storeComplete'])->name('profile.store-complete');
+});
+
+Route::middleware(['auth', 'profile.complete'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        if ($user->isAdmin()) {
+            return view('admin.dashboard');
+        }
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Perfil
+    Route::get('/perfil', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/perfil/editar', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/perfil', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/perfil/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('/perfil', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Habilidades del perfil
+    Route::post('/perfil/habilidades', [ProfileController::class, 'storeHabilidad'])->name('profile.habilidad.store');
+    Route::put('/perfil/habilidades/{habilidad}', [ProfileController::class, 'updateHabilidad'])->name('profile.habilidad.update');
+    Route::delete('/perfil/habilidades/{habilidad}', [ProfileController::class, 'destroyHabilidad'])->name('profile.habilidad.destroy');
 });
 
 /*

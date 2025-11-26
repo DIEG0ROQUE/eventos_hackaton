@@ -86,4 +86,12 @@ class Participante extends Model
     {
         return $this->user->name;
     }
+
+    /**
+     * Habilidades del participante
+     */
+    public function habilidades()
+    {
+        return $this->hasMany(Habilidad::class)->orderBy('orden');
+    }
 }

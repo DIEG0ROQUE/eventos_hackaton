@@ -37,6 +37,7 @@ class Equipo extends Model
     {
         return $this->belongsToMany(Participante::class, 'equipo_participante', 'equipo_id', 'participante_id')
                     ->withPivot('perfil_id', 'estado')
+                    ->using(EquipoParticipante::class)
                     ->withTimestamps();
     }
 
@@ -45,9 +46,16 @@ class Equipo extends Model
         return $this->hasOne(Proyecto::class);
     }
 
+    public function mensajes(): HasMany
+    {
+        return $this->hasMany(MensajeEquipo::class);
+    }
+
     public function miembrosActivos()
     {
-        return $this->participantes()->wherePivot('estado', 'activo');
+        return $this->participantes()
+                    ->wherePivot('estado', 'activo')
+                    ->with('carrera');
     }
 
     public function totalMiembros(): int

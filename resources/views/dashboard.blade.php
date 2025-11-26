@@ -143,12 +143,12 @@
                         <h3 class="text-lg font-bold text-gray-900 mb-4">Acciones Rápidas</h3>
                         
                         <div class="space-y-3">
-                            <a href="{{ route('eventos.index') }}" 
+                            <a href="{{ route('equipos.seleccionar-evento') }}" 
                                class="flex items-center gap-3 p-3 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition group">
                                 <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
                                 </svg>
-                                <span class="font-medium text-gray-700">Crear Equipos</span>
+                                <span class="font-medium text-gray-700">Crear Equipo</span>
                             </a>
 
                             <a href="{{ route('eventos.index') }}" 

@@ -3,7 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\JuezMiddleware;
+use App\Http\Middleware\EnsureProfileComplete;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,7 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'admin' => EnsureUserIsAdmin::class,
+            'admin' => AdminMiddleware::class,
+            'juez' => JuezMiddleware::class,
+            'profile.complete' => EnsureProfileComplete::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
