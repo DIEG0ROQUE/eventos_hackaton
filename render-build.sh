@@ -36,5 +36,6 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Ejecutar migraciones
+# Ejecutar migraciones y seeders
 php artisan migrate --force
+php artisan db:seed --force
